@@ -1,6 +1,10 @@
 # This is a very simple CRUD application.
 
-## To run:
+## To run:\
+
+`git clone https://github.com/michaelkotor/get-started.git`
+
+`cd get-started`
 
 `npm install`
 
@@ -34,8 +38,6 @@
 `PUT /api/editUser/id?name=NewName&age=NewAge`
 
 #### Delete a user
-
-`DELETE`
 
 `DELETE /api/deleteUser/id`
 
