@@ -3,6 +3,13 @@ const bodyParser = require('body-parser');
 
 const app = express();
 
+const userController = require('./controllers/userController');
+
+const userRouter = express.Router();
+
+
+
+
 let users = [
     {
         'id': 1,
@@ -33,8 +40,12 @@ app.get('/api/getUser/:id', function (req, res) {
 });
 
 app.get('/api/getAllUsers', function (req, res) {
-    res.end(JSON.stringify(users, null, '\t'));
-})
+    res.send(JSON.stringify(users, null, '\t'));
+});
+
+app.get('/about', function (req, res) {
+    res.send(JSON.stringify('We have nothing to talk about!', null, '\t'));
+});
 
 app.post('/api/createUser', function (req, res) {
     let name = req.body.name;
@@ -43,14 +54,14 @@ app.post('/api/createUser', function (req, res) {
     ;
     let tempUser = {id, name, age};
     users.push(tempUser);
-    res.end(JSON.stringify(tempUser, null, '\t'));
+    res.send(JSON.stringify(tempUser, null, '\t'));
 });
 
 app.delete('/api/deleteUser/:id', function (req, res) {
     let id = req.params.id;
     let tempUser = users[id];
     users.splice(id, 1);
-    res.end(JSON.stringify(tempUser, null, '\t'));
+    res.send(JSON.stringify(tempUser, null, '\t'));
 });
 
 app.put('/api/editUser/:id', function (req, res) {
@@ -65,7 +76,10 @@ app.put('/api/editUser/:id', function (req, res) {
         tempUser.age = newAge;
     }
     users[id] = tempUser;
-    res.end(JSON.stringify(tempUser, null, '\t'));
+    res.send(JSON.stringify(tempUser, null, '\t'));
 })
 
+
 app.listen(5000);
+
+module.exports.app = app;
