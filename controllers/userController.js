@@ -1,22 +1,23 @@
-const User = require('../models/user');
+const UserRepository = require('../storage/repository');
 
-exports.getUser = function(req, res) {
-    // users.push(;)
-    // let id = req.params.id;
-    // let tempUser = new User();
-    // if(tempUser !== undefined) {
-    //     res.end(JSON.stringify(tempUser, null, '\t'));
-    // } else {
-    //     res.sendStatus(404);
-    // }
+const Repo = new UserRepository();
+
+exports.getUserById = function(req, res) {
+    const id = req.params.id;
+    res.send(JSON.stringify(Repo.getUserById(id), null, '\t'));
 };
 
-exports.getUsers = function (req, res) {
-    res.send(JSON.stringify(User.getAll(), null, '\t'));
+exports.getAllUsers = function (req, res) {
+    res.send(JSON.stringify(Repo.getAllUsers(), null, '\t'));
 };
 
 exports.addUser = function(req, res) {
-
+    const email = req.body.email;
+    const name = req.body.name;
+    const age = req.body.age;
+    console.log(email);
+    let id = Repo.createNewUser(email, name, age);
+    res.send(JSON.stringify(id, null, '\t'));
 };
 
 exports.editUser = function (req, res) {

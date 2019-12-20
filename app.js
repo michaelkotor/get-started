@@ -3,13 +3,6 @@ const bodyParser = require('body-parser');
 
 const app = express();
 
-const userController = require('./controllers/userController');
-
-const userRouter = express.Router();
-
-
-
-
 let users = [
     {
         'id': 1,
@@ -50,8 +43,7 @@ app.get('/about', function (req, res) {
 app.post('/api/createUser', function (req, res) {
     let name = req.body.name;
     let age = req.body.age;
-    let id = users.length + 1
-    ;
+    let id = users.length + 1;
     let tempUser = {id, name, age};
     users.push(tempUser);
     res.send(JSON.stringify(tempUser, null, '\t'));
