@@ -22,23 +22,69 @@
 
 `GET /api/getUser/id`
 
-#### Add a user
-
-`POST /api/createUser`
+Result:
 
 ```json
 {
+    "email": "example@example.com",
     "name": "David",
-    "age": 14
+    "age": 21,
+    "id": 123123213
+}
+```
+
+#### Add a user
+
+`POST /api/addUser`
+
+Request:
+
+```json
+{
+    "email": "example@example.com",
+    "name": "David",
+    "age": 21
+}
+```
+
+Result:
+
+```json
+{
+    "email": "example@example.com",
+    "name": "David",
+    "age": 21,
+    "id": 235436566 
 }
 ```
 
 #### Update a user
 
-`PUT /api/editUser/id?name=NewName&age=NewAge`
+`PUT /api/updateUser/id?name=NewName&age=NewAge`
+
+You are not allowed to change id or email.
+
+Result:
+
+```json
+{
+    "email": "example@example.com",
+    "name": "newName",
+    "age": "newAge",
+    "id": 23453245345 
+}
+```
 
 #### Delete a user
 
 `DELETE /api/deleteUser/id`
 
+Result:
 
+```json
+{
+    "email": "this_account_is_now_deleted@example.com",
+    "name": "michel",
+    "age": 14,
+    "id": "id" 
+}

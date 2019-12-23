@@ -15,15 +15,19 @@ exports.addUser = function(req, res) {
     const email = req.body.email;
     const name = req.body.name;
     const age = req.body.age;
-    console.log(email);
-    let id = Repo.createNewUser(email, name, age);
+    const id = Repo.createNewUser(email, name, age);
     res.send(JSON.stringify(id, null, '\t'));
 };
 
 exports.editUser = function (req, res) {
-
+    const id = req.params.id;
+    const email = req.body.email;
+    const name = req.body.name;
+    const age = req.body.age;
+    res.send(JSON.stringify(Repo.editUserById(id, email, name, age), null, '\t'));
 };
 
 exports.deleteUser = function (req, res) {
-
+    const id = req.params.id;
+    res.send(JSON.stringify(Repo.deleteUserById(id), null, '\t'));
 };
