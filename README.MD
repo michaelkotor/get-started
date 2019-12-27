@@ -88,3 +88,11 @@ Result:
     "age": 14,
     "id": "id" 
 }
+```
+
+###MongoDB
+
+To start mongod locally
+```
+sudo service mongod start
+```

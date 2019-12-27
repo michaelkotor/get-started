@@ -1,20 +1,27 @@
 const User = require('../models/user');
-
+const Client = require('./connect/connection');
 const users = [];
 
-module.exports =  class UserRepository {
-    createNewUser(email, name, age) {
-        let id =  Math.round((Math.random() * (1000 - 100) + 100) * 10000000);
+const client = new Client();
+
+module.exports.UserRepository =  class UserRepository {
+    async createNewUser(email, name, age) {
+        let id = Math.round((Math.random() * (1000 - 100) + 100) * 10000000);
         let tempUser = new User(email, name, age, id);
+        const collection = await client.getCollection('Users', 'my');
+        await collection.insertOne(tempUser);
         users.push(tempUser);
         return id;
     };
 
-    getAllUsers() {
-        return users;
+    async getAllUsers() {
+        const collection = (await client.getCollection('Users', 'my')).find({});
+        //const result = await collection.find({});
+        //console.log(result);
+        return collection;
     }
 
-    getUserById(id) {
+    async getUserById(id) {
         for(let i = 0; i < users.length; i++) {
             if(users[i].id == id) {
                 console.log(users[i]);
@@ -24,7 +31,7 @@ module.exports =  class UserRepository {
         return null;
     }
 
-    editUserById(id, email, name, age) {
+    async editUserById(id, email, name, age) {
         let userToUpdate = null;
         let index = users.length + 1;
         for(let i = 0; i < users.length; i++) {
@@ -48,7 +55,7 @@ module.exports =  class UserRepository {
         return userToUpdate;
     }
 
-    deleteUserById(id) {
+    async deleteUserById(id) {
         console.log(id);
         let userToDelete = null;
         let index = users.length + 1;
