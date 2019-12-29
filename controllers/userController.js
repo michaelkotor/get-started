@@ -1,19 +1,16 @@
 const UserRepository = require('../storage/repository').UserRepository;
-
+const CircularJSON = require('circular-json');
 const Repo = new UserRepository();
 
 exports.getUserById = async function(req, res) {
     const id = req.params.id;
-    res.send(JSON.stringify(await Repo.getUserById(id), null, '\t'));
+    res.send(CircularJSON.stringify(await Repo.getUserById(id), null, '\t'));
 };
 
 exports.getAllUsers = async function (req, res) {
     const result = await Repo.getAllUsers();
-    //console.log(result);
-    console.log(JSON.stringify(JSON.decycle(result)));
-    // const resultJ = JSON.stringify(result, getCircularReplacer());
-    // console.log(resultJ);
-    res.send(1);
+    console.log(CircularJSON.stringify(result));
+    res.send(CircularJSON.stringify(result));
 };
 
 exports.addUser = async function(req, res) {

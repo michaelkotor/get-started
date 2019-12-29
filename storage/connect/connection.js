@@ -1,4 +1,5 @@
 const MongoClient = require('mongodb').MongoClient;
+const ObjectID = require('mongodb').ObjectId;
 module.exports = class Connection {
      async getClient() {
         const mongoClient = new MongoClient("mongodb://localhost:27017", {useUnifiedTopology: true});
@@ -21,5 +22,10 @@ module.exports = class Connection {
         //console.log(db);
         const collection = await db.collection(collectionName);
         return collection;
+    }
+
+    async convertId(_id) {
+        const o_id = new ObjectID(_id);
+        return o_id;
     }
 };

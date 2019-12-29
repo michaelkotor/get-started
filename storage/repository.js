@@ -6,29 +6,25 @@ const client = new Client();
 
 module.exports.UserRepository =  class UserRepository {
     async createNewUser(email, name, age) {
-        let id = Math.round((Math.random() * (1000 - 100) + 100) * 10000000);
-        let tempUser = new User(email, name, age, id);
+        let tempUser = new User(email, name, age);
         const collection = await client.getCollection('Users', 'my');
         await collection.insertOne(tempUser);
-        users.push(tempUser);
-        return id;
+        const userDB = await collection.findOne({email:email, name:name, age:age});
+        const tempUserDBid = userDB._id;
+        return tempUserDBid;
     };
 
     async getAllUsers() {
-        const collection = (await client.getCollection('Users', 'my')).find({});
-        //const result = await collection.find({});
-        //console.log(result);
-        return collection;
+        const collection = (await client.getCollection('Users', 'my'));
+        const cursor = await collection.find({});
+        const result = await cursor.toArray();
+        return result;
     }
 
-    async getUserById(id) {
-        for(let i = 0; i < users.length; i++) {
-            if(users[i].id == id) {
-                console.log(users[i]);
-                return users[i];
-            }
-        }
-        return null;
+    async getUserById(_id) {
+        const collection = await client.getCollection('Users', 'my');
+        const user = await collection.findOne(client.convertId(_id));
+        return user;
     }
 
     async editUserById(id, email, name, age) {
