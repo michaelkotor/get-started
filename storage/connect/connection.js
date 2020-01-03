@@ -25,7 +25,7 @@ module.exports = class Connection {
     }
 
     async convertId(_id) {
-        const o_id = new ObjectID(_id);
+        const o_id = ObjectID(_id);
         return o_id;
     }
 };

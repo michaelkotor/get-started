@@ -6,64 +6,52 @@ const client = new Client();
 
 module.exports.UserRepository =  class UserRepository {
     async createNewUser(email, name, age) {
-        let tempUser = new User(email, name, age);
+        let id = Math.round(Math.random() * 10000000) + "";
+        let tempUser = new User(email, name, age, id, id);
         const collection = await client.getCollection('Users', 'my');
         await collection.insertOne(tempUser);
-        const userDB = await collection.findOne({email:email, name:name, age:age});
-        const tempUserDBid = userDB._id;
+        const userDB = await collection.findOne({_id:id});
+        const tempUserDBid = await User.convert(userDB);
         return tempUserDBid;
     };
 
     async getAllUsers() {
         const collection = (await client.getCollection('Users', 'my'));
         const cursor = await collection.find({});
-        const result = await cursor.toArray();
+        const array = await cursor.toArray();
+        let result = [];
+        for(let i = 0; i < array.length; i++) {
+            result.push( await User.convert(array[i]));
+        }
         return result;
     }
 
-    async getUserById(_id) {
+    async getUserById(id) {
         const collection = await client.getCollection('Users', 'my');
-        const user = await collection.findOne(client.convertId(_id));
-        return user;
+        //console.log(id);
+        const userDB = await collection.findOne({_id:id});
+        //console.log(userDB);
+        const result = await User.convert(userDB);
+        //console.log(result);
+        return result;
     }
 
     async editUserById(id, email, name, age) {
-        let userToUpdate = null;
-        let index = users.length + 1;
-        for(let i = 0; i < users.length; i++) {
-            if(users[i].id == id) {
-                index = i;
-                userToUpdate = users[i];
-                break;
-            }
-        }
+        let userToUpdate = new User(email, name, age, id, id);
+        const collection = await client.getCollection('Users', 'my');
+        collection.updateOne({_id:id}, { $set: userToUpdate});
         console.log(name);
-        if(email !== undefined) {
-            userToUpdate.email = email;
-        }
-        if(name !== undefined) {
-            userToUpdate.name = name;
-        }
-        if(age !== undefined) {
-            userToUpdate.age = age;
-        }
-        users[index] = userToUpdate;
         return userToUpdate;
     }
 
     async deleteUserById(id) {
-        console.log(id);
-        let userToDelete = null;
-        let index = users.length + 1;
-        for(let i = 0 ; i < users.length; i++) {
-            if(users[i].id == id) {
-                userToDelete = users[i];
-                index = i;
-                break;
-            }
+        const collection = await client.getCollection('Users', 'my');
+        const userToDelete = await this.getUserById(id);
+        if(userToDelete != null) {
+            await collection.deleteOne({_id:id});
+            return userToDelete;
         }
-        users.splice(index, 1);
-        return userToDelete;
+        return 'No such user';
     }
 };
 
