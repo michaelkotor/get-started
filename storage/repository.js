@@ -4,22 +4,17 @@ const Client = require('./connect/connection');
 const client = new Client();
 
 module.exports.UserRepository =  class UserRepository {
-    async createNewUser(email, name, age) {
+    async addNewUser(userToAdd) {
         const collection = await client.getCollection('Users', 'my');
-        const checkUser = await collection.findOne({email:email});
-        if(checkUser != null) {
-            return 'Such user already exists';
-        }
         const _id = Math.round(Math.random() * 100000000000) + "";
-        const tempUser = new User(_id, email, name, age);
-        await collection.insertOne(tempUser);
-        return tempUser;
+        userToAdd._id = _id;
+        await collection.insertOne(userToAdd);
+        return userToAdd;
     };
 
     async getAllUsers() {
         const collection = (await client.getCollection('Users', 'my'));
-        const cursor = await collection.find({});
-        const array = await cursor.toArray();
+        const array = await collection.find({}).toArray();
         let result = [];
         for(let i = 0; i < array.length; i++) {
             result.push( await array[i]);
@@ -29,32 +24,29 @@ module.exports.UserRepository =  class UserRepository {
 
     async getUserById(id) {
         const collection = await client.getCollection('Users', 'my');
-        const userDB = await collection.findOne({_id:id});
-        if(userDB == null) {
-            return 'No such user';
-        }
-        return userDB;
+        return await collection.findOne({_id:id});
     }
 
-    async editUserById(_id, email, name, age) {
+    async editUser(userToUpdate) {
         const collection = await client.getCollection('Users', 'my');
-        const checkUser = await collection.findOne({email:email});
-        if(checkUser != null) {
-            return 'Such user already exists. Change email';
-        }
-        const userToUpdate = new User(_id, email, name, age);
-        await collection.updateOne({_id:_id}, {$set: {_id:_id, email:email, name:name, age:age}});
+        await collection.updateOne({_id:userToUpdate._id}, {$set: userToUpdate});
         return userToUpdate;
     }
 
     async deleteUserById(_id) {
         const collection = await client.getCollection('Users', 'my');
-        const userToDelete = await this.getUserById(_id);
-        if(userToDelete != null) {
-            await collection.deleteOne({_id:_id});
-            return userToDelete;
+        const result = await collection.deleteOne({_id:_id});
+
+        return result;
+    }
+
+    async ifUserExistsWithEmail(email) {
+        const collection = await client.getCollection('Users', 'my');
+        const userEmail = await collection.findOne({email:email});
+        if(userEmail == null) {
+            return false;
         }
-        return 'No such user';
+        return true;
     }
 };
 

@@ -1,21 +1,21 @@
-const UserRepository = require('../storage/repository').UserRepository;
+const CRUDRepository = require('../services/CRUDService');
 const CircularJSON = require('circular-json');
-const Repo = new UserRepository();
+const CRUD = new CRUDRepository();
 
 exports.getUserById = async function(req, res) {
     const id = req.params.id;
-    res.send(CircularJSON.stringify(await Repo.getUserById(id)));
+    res.send(CircularJSON.stringify(await CRUD.getUserById(id)));
 };
 
 exports.getAllUsers = async function (req, res) {
-    res.send(CircularJSON.stringify(await Repo.getAllUsers()));
+    res.send(CircularJSON.stringify(await CRUD.getAllUsers()));
 };
 
 exports.addUser = async function(req, res) {
     const email = req.body.email;
     const name = req.body.name;
     const age = req.body.age;
-    res.send(CircularJSON.stringify(await Repo.createNewUser(email, name, age)));
+    res.send(CircularJSON.stringify(await CRUD.createUser(email, name, age)));
 };
 
 exports.editUser = async function (req, res) {
@@ -23,10 +23,10 @@ exports.editUser = async function (req, res) {
     const email = req.body.email;
     const name = req.body.name;
     const age = req.body.age;
-    res.send(CircularJSON.stringify(await Repo.editUserById(id, email, name, age)));
+    res.send(CircularJSON.stringify(await CRUD.updateUserById(id, email, name, age)));
 };
 
 exports.deleteUser = async function (req, res) {
     const id = req.params.id;
-    res.send(CircularJSON.stringify(await Repo.deleteUserById(id)));
+    res.send(CircularJSON.stringify(await CRUD.deleteUserById(id)));
 };
