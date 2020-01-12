@@ -6,9 +6,7 @@
 
 `cd get-started`
 
-`npm install`
-
-`npm start`
+`docker-compose up --build`
 
 ## The server will start at localhost:5000
 
@@ -92,7 +90,7 @@ Result:
 
 ###MongoDB
 
-To start mongod locally
+To start mongodb locally
 ```
 sudo service mongod start
 ```
