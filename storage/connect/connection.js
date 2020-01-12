@@ -1,31 +1,37 @@
 const MongoClient = require('mongodb').MongoClient;
-const ObjectID = require('mongodb').ObjectId;
+
 module.exports = class Connection {
      async getClient() {
-        const mongoClient = new MongoClient("mongodb://localhost:27017", {useUnifiedTopology: true});
-        //let con = await mongoClient.connect();
-        //console.log(con);
-         const result = await mongoClient.connect();
+        const mongoClient = new MongoClient("mongodb://mongo:27017/", {useUnifiedTopology: true});
+         let result;
+         try {
+             result = await mongoClient.connect();
+         } catch (e) {
+             console.log('I can\'t connect at all');
+             throw e;
+         }
          return result;
     };
 
     async getDatabase(databaseName) {
-        const client = await this.getClient();
-        //console.log(client);
+        let client;
+        try {
+            client = await this.getClient();
+        } catch (e) {
+            throw e;
+        }
         const db = await client.db(databaseName);
-        //console.log(db);
         return db;
     }
 
     async getCollection(collectionName, databaseName) {
-        const db = await this.getDatabase(databaseName);
-        //console.log(db);
+        let db;
+        try {
+            db = await this.getDatabase(databaseName);
+        } catch (e) {
+            throw e;
+        }
         const collection = await db.collection(collectionName);
         return collection;
-    }
-
-    async convertId(_id) {
-        const o_id = ObjectID(_id);
-        return o_id;
     }
 };
